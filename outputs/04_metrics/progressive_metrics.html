@@ -1,0 +1,540 @@
+<html><head><meta charset='utf-8'><title>Progressive Training — Vector · Full Spectrum — Metrics</title><style>
+body{font-family:system-ui,sans-serif;max-width:1200px;margin:auto;padding:20px}
+h1,h2{color:#37474F}
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin-top:12px}
+th,td{border:1px solid #ddd;padding:5px 10px;text-align:right}
+th{background:#37474F;color:white;cursor:pointer;white-space:nowrap;user-select:none}
+th:first-child,td:first-child,
+th:nth-child(2),td:nth-child(2),
+th:nth-child(3),td:nth-child(3),
+th:nth-child(4),td:nth-child(4),
+th:nth-child(5),td:nth-child(5){text-align:left}
+tr:nth-child(even){background:#F5F5F5}
+.note{font-size:12px;color:#666;margin:6px 0 16px}
+.cross td{background:#FFF9C4 !important}
+</style><script>
+function sortTable(n){
+  var t=document.querySelector("table"),rows,ok=true,i,x,y,dir="asc",sw;
+  while(ok){ok=false;rows=t.rows;
+    for(i=1;i<rows.length-1;i++){sw=false;
+      x=rows[i].cells[n];y=rows[i+1].cells[n];
+      var a=isNaN(x.innerHTML)?x.innerHTML.toLowerCase():parseFloat(x.innerHTML);
+      var b=isNaN(y.innerHTML)?y.innerHTML.toLowerCase():parseFloat(y.innerHTML);
+      if((dir=="asc"&&a>b)||(dir=="desc"&&a<b)){
+        rows[i].parentNode.insertBefore(rows[i+1],rows[i]);sw=true;ok=true;}}
+    if(!sw){if(dir=="asc"){dir="desc";ok=true;}}}}
+window.onload=function(){
+  document.querySelectorAll("th").forEach((th,i)=>{th.onclick=()=>sortTable(i);});};
+</script></head><body><h1>Progressive Training — Vector · Full Spectrum</h1><p class='note'>Cumulative training: each PMUT N is predicted by a model trained on all preceding PMUTs [1..N-1]. Approach: Vector (multi-output). Scope: Full Spectrum (1000 pts). R² negatives clipped to 0 in chart; red ✕ marks them.</p><div style="height:780px; width:100%;">                        <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="5ea3eb66-ac81-4d67-81bc-6176f1a1770c" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("5ea3eb66-ac81-4d67-81bc-6176f1a1770c")) {                    Plotly.newPlot(                        "5ea3eb66-ac81-4d67-81bc-6176f1a1770c",                        [{"legendgroup":"RF","marker":{"color":"#2196F3"},"name":"RF","x":["P2","P3","P4","P5","P6","P7","P8","P9","P10","P11","P12","P13","P14","P15","P16"],"y":[0.462314,0.223393,0.053012,0.012914,0.004231,0.001942,0.001434,0.00128,0.000795,0.000655,0.005818,0.001781,0.000448,0.000222,0.00011],"type":"bar","xaxis":"x","yaxis":"y"},{"legendgroup":"RF","marker":{"color":"#2196F3"},"name":"RF","showlegend":false,"x":["P2","P3","P4","P5","P6","P7","P8","P9","P10","P11","P12","P13","P14","P15","P16"],"y":[0.462343,0.223437,0.053033,0.012938,0.004253,0.001956,0.001438,0.00132,0.000803,0.000663,0.00589,0.001799,0.000453,0.000284,0.000153],"type":"bar","xaxis":"x2","yaxis":"y2"},{"legendgroup":"RF","marker":{"color":"#2196F3"},"name":"RF","showlegend":false,"x":["P2","P3","P4","P5","P6","P7","P8","P9","P10","P11","P12","P13","P14","P15","P16"],"y":[0.0,0.0,0.0,0.0,0.3669,0.8671,0.929,0.9373,0.9771,0.9847,0.0,0.8849,0.9928,0.9972,0.9992],"type":"bar","xaxis":"x3","yaxis":"y3"},{"hoverinfo":"text+x","hovertext":["RF R\u00b2=-11527.742","RF R\u00b2=-1737.897","RF R\u00b2=-97.699","RF R\u00b2=-4.886","RF R\u00b2=-0.239"],"marker":{"color":"red","size":11,"symbol":"x"},"mode":"markers","showlegend":false,"x":["P2","P3","P4","P5","P12"],"y":[0.01,0.01,0.01,0.01,0.01],"type":"scatter","xaxis":"x3","yaxis":"y3"},{"legendgroup":"RF","marker":{"color":"#2196F3"},"name":"RF","showlegend":false,"x":["Regime 1 (1\u20132)","Regime 2 (3\u201311)","Regime 3 (12\u201316)"],"y":[0.462314,0.03329511111111111,0.0016758000000000003],"type":"bar","xaxis":"x4","yaxis":"y4"},{"legendgroup":"GB","marker":{"color":"#FF9800"},"name":"GB","x":["P2","P3","P4","P5","P6","P7","P8","P9","P10","P11","P12","P13","P14","P15","P16"],"y":[0.462314,0.096263,0.006034,0.003017,0.001857,0.001138,0.00093,0.000805,0.000428,0.00039,0.005624,5.1e-05,4.2e-05,0.000161,6e-05],"type":"bar","xaxis":"x","yaxis":"y"},{"legendgroup":"GB","marker":{"color":"#FF9800"},"name":"GB","showlegend":false,"x":["P2","P3","P4","P5","P6","P7","P8","P9","P10","P11","P12","P13","P14","P15","P16"],"y":[0.462343,0.096323,0.006066,0.003047,0.001872,0.001147,0.000933,0.000853,0.000438,0.000403,0.005701,9.8e-05,6.3e-05,0.000234,7.9e-05],"type":"bar","xaxis":"x2","yaxis":"y2"},{"legendgroup":"GB","marker":{"color":"#FF9800"},"name":"GB","showlegend":false,"x":["P2","P3","P4","P5","P6","P7","P8","P9","P10","P11","P12","P13","P14","P15","P16"],"y":[0.0,0.0,0.0,0.6735,0.8773,0.9544,0.9701,0.9738,0.9932,0.9943,0.0,0.9997,0.9999,0.9981,0.9998],"type":"bar","xaxis":"x3","yaxis":"y3"},{"hoverinfo":"text+x","hovertext":["GB R\u00b2=-11527.742","GB R\u00b2=-322.163","GB R\u00b2=-0.291","GB R\u00b2=-0.161"],"marker":{"color":"red","size":11,"symbol":"x"},"mode":"markers","showlegend":false,"x":["P2","P3","P4","P12"],"y":[0.01,0.01,0.01,0.01],"type":"scatter","xaxis":"x3","yaxis":"y3"},{"legendgroup":"GB","marker":{"color":"#FF9800"},"name":"GB","showlegend":false,"x":["Regime 1 (1\u20132)","Regime 2 (3\u201311)","Regime 3 (12\u201316)"],"y":[0.462314,0.012318,0.0011876],"type":"bar","xaxis":"x4","yaxis":"y4"},{"legendgroup":"MLP","marker":{"color":"#9C27B0"},"name":"MLP","x":["P2","P3","P4","P5","P6","P7","P8","P9","P10","P11","P12","P13","P14","P15","P16"],"y":[0.490164,0.036252,0.006146,0.020608,0.007533,0.002891,0.002833,0.003893,0.004332,0.004527,0.00262,0.002121,0.003869,0.003922,0.003617],"type":"bar","xaxis":"x","yaxis":"y"},{"legendgroup":"MLP","marker":{"color":"#9C27B0"},"name":"MLP","showlegend":false,"x":["P2","P3","P4","P5","P6","P7","P8","P9","P10","P11","P12","P13","P14","P15","P16"],"y":[0.49053,0.036842,0.007321,0.021083,0.008201,0.003567,0.003662,0.00483,0.005043,0.005249,0.003195,0.002699,0.004459,0.004485,0.004109],"type":"bar","xaxis":"x2","yaxis":"y2"},{"legendgroup":"MLP","marker":{"color":"#9C27B0"},"name":"MLP","showlegend":false,"x":["P2","P3","P4","P5","P6","P7","P8","P9","P10","P11","P12","P13","P14","P15","P16"],"y":[0.0,0.0,0.0,0.0,0.0,0.5584,0.5398,0.1608,0.0983,0.0394,0.6353,0.7408,0.2982,0.296,0.4081],"type":"bar","xaxis":"x3","yaxis":"y3"},{"hoverinfo":"text+x","hovertext":["MLP R\u00b2=-12976.322","MLP R\u00b2=-46.276","MLP R\u00b2=-0.881","MLP R\u00b2=-14.630","MLP R\u00b2=-1.354"],"marker":{"color":"red","size":11,"symbol":"x"},"mode":"markers","showlegend":false,"x":["P2","P3","P4","P5","P6"],"y":[0.01,0.01,0.01,0.01,0.01],"type":"scatter","xaxis":"x3","yaxis":"y3"},{"legendgroup":"MLP","marker":{"color":"#9C27B0"},"name":"MLP","showlegend":false,"x":["Regime 1 (1\u20132)","Regime 2 (3\u201311)","Regime 3 (12\u201316)"],"y":[0.490164,0.009890555555555555,0.0032298],"type":"bar","xaxis":"x4","yaxis":"y4"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"xaxis":{"anchor":"y","domain":[0.0,0.45]},"yaxis":{"anchor":"x","domain":[0.5900000000000001,1.0],"title":{"text":"MAE"}},"xaxis2":{"anchor":"y2","domain":[0.55,1.0]},"yaxis2":{"anchor":"x2","domain":[0.5900000000000001,1.0],"title":{"text":"RMSE"}},"xaxis3":{"anchor":"y3","domain":[0.0,0.45]},"yaxis3":{"anchor":"x3","domain":[0.0,0.41000000000000003],"title":{"text":"R\u00b2"}},"xaxis4":{"anchor":"y4","domain":[0.55,1.0]},"yaxis4":{"anchor":"x4","domain":[0.0,0.41000000000000003],"title":{"text":"Mean MAE"}},"annotations":[{"font":{"size":16},"showarrow":false,"text":"MAE  \u2014  Progressive Training","x":0.225,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"},{"font":{"size":16},"showarrow":false,"text":"RMSE  \u2014  Progressive Training","x":0.775,"xanchor":"center","xref":"paper","y":1.0,"yanchor":"bottom","yref":"paper"},{"font":{"size":16},"showarrow":false,"text":"R\u00b2  \u2014  Progressive Training   (negatives clipped; red \u2715 = was negative)","x":0.225,"xanchor":"center","xref":"paper","y":0.41000000000000003,"yanchor":"bottom","yref":"paper"},{"font":{"size":16},"showarrow":false,"text":"Mean MAE by Regime  \u2014  Progressive Training","x":0.775,"xanchor":"center","xref":"paper","y":0.41000000000000003,"yanchor":"bottom","yref":"paper"}],"legend":{"orientation":"h","y":-0.08},"barmode":"group","title":{"text":"MAE \u002f RMSE \u002f R\u00b2  \u2014  Progressive Training | Vector (multi-output) | Full Spectrum"},"height":780},                        {"responsive": true}                    )                };            </script>        </div><h2>Full Results <small>(click any column header to sort)</small></h2><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Target_PMUT</th>
+      <th>Regime</th>
+      <th>Step_Type</th>
+      <th>Train_PMUTs</th>
+      <th>N_train</th>
+      <th>Model</th>
+      <th>MAE</th>
+      <th>RMSE</th>
+      <th>R2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2</td>
+      <td>Regime 1 (1–2)</td>
+      <td>progressive</td>
+      <td>[1]</td>
+      <td>1</td>
+      <td>RF</td>
+      <td>0.462314</td>
+      <td>0.462343</td>
+      <td>-11527.742000</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Regime 1 (1–2)</td>
+      <td>progressive</td>
+      <td>[1]</td>
+      <td>1</td>
+      <td>GB</td>
+      <td>0.462314</td>
+      <td>0.462343</td>
+      <td>-11527.742000</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Regime 1 (1–2)</td>
+      <td>progressive</td>
+      <td>[1]</td>
+      <td>1</td>
+      <td>MLP</td>
+      <td>0.490164</td>
+      <td>0.490530</td>
+      <td>-12976.321500</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2]</td>
+      <td>2</td>
+      <td>RF</td>
+      <td>0.223393</td>
+      <td>0.223437</td>
+      <td>-1737.897200</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2]</td>
+      <td>2</td>
+      <td>GB</td>
+      <td>0.096263</td>
+      <td>0.096323</td>
+      <td>-322.163500</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2]</td>
+      <td>2</td>
+      <td>MLP</td>
+      <td>0.036252</td>
+      <td>0.036842</td>
+      <td>-46.276300</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3]</td>
+      <td>3</td>
+      <td>RF</td>
+      <td>0.053012</td>
+      <td>0.053033</td>
+      <td>-97.699200</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3]</td>
+      <td>3</td>
+      <td>GB</td>
+      <td>0.006034</td>
+      <td>0.006066</td>
+      <td>-0.291400</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3]</td>
+      <td>3</td>
+      <td>MLP</td>
+      <td>0.006146</td>
+      <td>0.007321</td>
+      <td>-0.880900</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4]</td>
+      <td>4</td>
+      <td>RF</td>
+      <td>0.012914</td>
+      <td>0.012938</td>
+      <td>-4.886200</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4]</td>
+      <td>4</td>
+      <td>GB</td>
+      <td>0.003017</td>
+      <td>0.003047</td>
+      <td>0.673500</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4]</td>
+      <td>4</td>
+      <td>MLP</td>
+      <td>0.020608</td>
+      <td>0.021083</td>
+      <td>-14.630400</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5]</td>
+      <td>5</td>
+      <td>RF</td>
+      <td>0.004231</td>
+      <td>0.004253</td>
+      <td>0.366900</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5]</td>
+      <td>5</td>
+      <td>GB</td>
+      <td>0.001857</td>
+      <td>0.001872</td>
+      <td>0.877300</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5]</td>
+      <td>5</td>
+      <td>MLP</td>
+      <td>0.007533</td>
+      <td>0.008201</td>
+      <td>-1.354300</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6]</td>
+      <td>6</td>
+      <td>RF</td>
+      <td>0.001942</td>
+      <td>0.001956</td>
+      <td>0.867100</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6]</td>
+      <td>6</td>
+      <td>GB</td>
+      <td>0.001138</td>
+      <td>0.001147</td>
+      <td>0.954400</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6]</td>
+      <td>6</td>
+      <td>MLP</td>
+      <td>0.002891</td>
+      <td>0.003567</td>
+      <td>0.558400</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7]</td>
+      <td>7</td>
+      <td>RF</td>
+      <td>0.001434</td>
+      <td>0.001438</td>
+      <td>0.929000</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7]</td>
+      <td>7</td>
+      <td>GB</td>
+      <td>0.000930</td>
+      <td>0.000933</td>
+      <td>0.970100</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7]</td>
+      <td>7</td>
+      <td>MLP</td>
+      <td>0.002833</td>
+      <td>0.003662</td>
+      <td>0.539800</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8]</td>
+      <td>8</td>
+      <td>RF</td>
+      <td>0.001280</td>
+      <td>0.001320</td>
+      <td>0.937300</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8]</td>
+      <td>8</td>
+      <td>GB</td>
+      <td>0.000805</td>
+      <td>0.000853</td>
+      <td>0.973800</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8]</td>
+      <td>8</td>
+      <td>MLP</td>
+      <td>0.003893</td>
+      <td>0.004830</td>
+      <td>0.160800</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9]</td>
+      <td>9</td>
+      <td>RF</td>
+      <td>0.000795</td>
+      <td>0.000803</td>
+      <td>0.977100</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9]</td>
+      <td>9</td>
+      <td>GB</td>
+      <td>0.000428</td>
+      <td>0.000438</td>
+      <td>0.993200</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9]</td>
+      <td>9</td>
+      <td>MLP</td>
+      <td>0.004332</td>
+      <td>0.005043</td>
+      <td>0.098300</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</td>
+      <td>10</td>
+      <td>RF</td>
+      <td>0.000655</td>
+      <td>0.000663</td>
+      <td>0.984700</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</td>
+      <td>10</td>
+      <td>GB</td>
+      <td>0.000390</td>
+      <td>0.000403</td>
+      <td>0.994300</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>Regime 2 (3–11)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</td>
+      <td>10</td>
+      <td>MLP</td>
+      <td>0.004527</td>
+      <td>0.005249</td>
+      <td>0.039400</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]</td>
+      <td>11</td>
+      <td>RF</td>
+      <td>0.005818</td>
+      <td>0.005890</td>
+      <td>-0.239500</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]</td>
+      <td>11</td>
+      <td>GB</td>
+      <td>0.005624</td>
+      <td>0.005701</td>
+      <td>-0.161300</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]</td>
+      <td>11</td>
+      <td>MLP</td>
+      <td>0.002620</td>
+      <td>0.003195</td>
+      <td>0.635300</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]</td>
+      <td>12</td>
+      <td>RF</td>
+      <td>0.001781</td>
+      <td>0.001799</td>
+      <td>0.884900</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]</td>
+      <td>12</td>
+      <td>GB</td>
+      <td>0.000051</td>
+      <td>0.000098</td>
+      <td>0.999700</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]</td>
+      <td>12</td>
+      <td>MLP</td>
+      <td>0.002121</td>
+      <td>0.002699</td>
+      <td>0.740800</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]</td>
+      <td>13</td>
+      <td>RF</td>
+      <td>0.000448</td>
+      <td>0.000453</td>
+      <td>0.992800</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]</td>
+      <td>13</td>
+      <td>GB</td>
+      <td>0.000042</td>
+      <td>0.000063</td>
+      <td>0.999900</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]</td>
+      <td>13</td>
+      <td>MLP</td>
+      <td>0.003869</td>
+      <td>0.004459</td>
+      <td>0.298200</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]</td>
+      <td>14</td>
+      <td>RF</td>
+      <td>0.000222</td>
+      <td>0.000284</td>
+      <td>0.997200</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]</td>
+      <td>14</td>
+      <td>GB</td>
+      <td>0.000161</td>
+      <td>0.000234</td>
+      <td>0.998100</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]</td>
+      <td>14</td>
+      <td>MLP</td>
+      <td>0.003922</td>
+      <td>0.004485</td>
+      <td>0.296000</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]</td>
+      <td>15</td>
+      <td>RF</td>
+      <td>0.000110</td>
+      <td>0.000153</td>
+      <td>0.999200</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]</td>
+      <td>15</td>
+      <td>GB</td>
+      <td>0.000060</td>
+      <td>0.000079</td>
+      <td>0.999800</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>Regime 3 (12–16)</td>
+      <td>progressive</td>
+      <td>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]</td>
+      <td>15</td>
+      <td>MLP</td>
+      <td>0.003617</td>
+      <td>0.004109</td>
+      <td>0.408100</td>
+    </tr>
+  </tbody>
+</table></body></html>
