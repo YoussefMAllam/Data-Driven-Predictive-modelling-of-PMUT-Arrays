@@ -67,13 +67,23 @@ def _entry_from_group(tdf: pd.DataFrame):
     for approach in ["Vector", "Pointwise"]:
         entry[approach] = {}
         apdf = tdf[tdf["approach"] == approach]
-        for model in ["RF", "GB", "MLP"]:
+        for model in ["RF", "GB", "MLP", "Physics"]:
             mdf = apdf[apdf["model"] == model].sort_values("frequency_mhz")
             if mdf.empty:
                 continue
             fq_m  = mdf["frequency_mhz"].values
             act_m = mdf["actual"].values
             pr_m  = mdf["predicted"].values
+            params = {}
+            if model == "Physics" and not mdf.empty:
+                params = {
+                    "m_N": float(mdf.iloc[0]["m_n"]) if "m_n" in mdf.columns else None,
+                    "c_N": float(mdf.iloc[0]["c_n"]) if "c_n" in mdf.columns else None,
+                    "k_N": float(mdf.iloc[0]["k_n"]) if "k_n" in mdf.columns else None,
+                    "alpha_N": float(mdf.iloc[0]["alpha_n"]) if "alpha_n" in mdf.columns else None,
+                    "G_N": float(mdf.iloc[0]["g_n"]) if "g_n" in mdf.columns else None,
+                    "A_background": float(mdf.iloc[0]["a_background"]) if "a_background" in mdf.columns else None,
+                }
 
             roi   = (fq_m >= fwhm_lo) & (fq_m <= fwhm_hi)
             mae_f, rmse_f, r2_f = _metrics(act_m, pr_m)
@@ -88,6 +98,7 @@ def _entry_from_group(tdf: pd.DataFrame):
                 "r2_full":  round(r2_f,  4),
                 "mae_roi":  round(mae_r, 6) if mae_r is not None else None,
                 "r2_roi":   round(r2_r,  4) if r2_r  is not None else None,
+                **({"params": params} if model == "Physics" else {}),
             }
             score_rows.append([approach, model, mae_f, r2_f, mae_r, r2_r])
 

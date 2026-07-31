@@ -10,6 +10,8 @@ Each function returns:
 """
 
 import numpy as np
+import pandas as pd
+from scipy.optimize import least_squares
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.neural_network import MLPRegressor
@@ -19,8 +21,130 @@ from sklearn.metrics import mean_absolute_error, r2_score
 from helpers.fwhm_utils import compute_fwhm_window, get_window_train_df
 
 
+def forward_amplitude(freqs_hz, theta, voltage, background=0.0):
+    """Evaluate the second-order physics forward model at the requested Hz."""
+    m_n, c_n, k_n, alpha_n, g_n = theta
+    w = 2.0 * np.pi * np.asarray(freqs_hz, dtype=float)
+    volt = np.asarray(voltage, dtype=float)
+    denom = np.sqrt((k_n - m_n * w**2) ** 2 + (c_n * w) ** 2)
+    displacement = (alpha_n * volt) / np.clip(denom, 1e-12, None)
+    return g_n * displacement + background
+
+
+def fit_physics_params(freqs_hz, amplitudes, voltage, background_guess=None):
+    """Fit the five physical parameters and a DC background offset."""
+    freqs = np.asarray(freqs_hz, dtype=float)
+    amps = np.asarray(amplitudes, dtype=float)
+    volt = np.asarray(voltage, dtype=float)
+
+    if volt.ndim == 0:
+        volt = np.full_like(freqs, float(volt))
+    if freqs.size < 5:
+        return np.array([1e-8, 1.0, 1e6, 1.0, 1.0]), float(np.median(amps))
+
+    if background_guess is None:
+        background_guess = float(np.median(amps[np.isfinite(amps)]))
+
+    center_freq = np.median(freqs[np.argmax(np.abs(amps))]) if np.any(np.isfinite(amps)) else np.median(freqs)
+    k0 = min(max(center_freq * center_freq * 1e-6, 1e2), 1e12)
+    p0 = np.array([1e-8, 1.0, k0, 1.0, 1.0, background_guess], dtype=float)
+    bounds = (
+        np.array([1e-12, 1e-6, 1e2, 1e-6, 1e-6, -np.inf], dtype=float),
+        np.array([1e-2, 1e4, 1e12, 1e4, 1e4, np.inf], dtype=float),
+    )
+
+    def residuals(params):
+        theta = params[:5]
+        background = params[5]
+        return forward_amplitude(freqs, theta, volt, background=background) - amps
+
+    res = least_squares(residuals, x0=p0, bounds=bounds, max_nfev=4000)
+    theta_hat = res.x[:5]
+    background_hat = res.x[5]
+    return theta_hat, background_hat
+
+
 def _roi_mask(freqs, fwhm_lo, fwhm_hi):
     return (freqs >= fwhm_lo) & (freqs <= fwhm_hi)
+
+
+def _build_physics_param_table(df_all, pmuts):
+    """Fit one parameter set per PMUT and return it as regression labels."""
+    rows = []
+    for p in pmuts:
+        sub = df_all[df_all["N_PMUT"] == p].sort_values("Frequency_MHz")
+        if sub.empty:
+            continue
+        theta, background = fit_physics_params(
+            sub["Frequency_Hz"].values,
+            sub["Amplitude_R_mean"].values,
+            sub["V"].fillna(1.0).values,
+        )
+        rows.append({
+            "N_PMUT": int(p),
+            "m_N": float(theta[0]),
+            "c_N": float(theta[1]),
+            "k_N": float(theta[2]),
+            "alpha_N": float(theta[3]),
+            "G_N": float(theta[4]),
+            "A_background": float(background),
+        })
+    return pd.DataFrame(rows)
+
+
+def _predict_physics_curve(df_all, t_pmuts, target):
+    """Predict physics parameters for a target PMUT and reconstruct its sweep."""
+    tg_df = df_all[df_all["N_PMUT"] == target].sort_values("Frequency_MHz")
+    freqs = tg_df["Frequency_MHz"].values
+    actual = tg_df["Amplitude_R_mean"].values
+
+    param_df = _build_physics_param_table(df_all, t_pmuts)
+    if param_df.empty:
+        theta, background = fit_physics_params(
+            tg_df["Frequency_Hz"].values,
+            actual,
+            tg_df["V"].fillna(1.0).values,
+        )
+        preds = forward_amplitude(
+            tg_df["Frequency_Hz"].values,
+            theta,
+            tg_df["V"].fillna(1.0).values,
+            background=background,
+        )
+        return freqs, actual, preds, {
+            "m_N": float(theta[0]),
+            "c_N": float(theta[1]),
+            "k_N": float(theta[2]),
+            "alpha_N": float(theta[3]),
+            "G_N": float(theta[4]),
+            "A_background": float(background),
+        }
+
+    X_tr = np.array([[float(p)] for p in param_df["N_PMUT"].values])
+    y_tr = param_df[["m_N", "c_N", "k_N", "alpha_N", "G_N", "A_background"]].values
+    X_tg = np.array([[float(target)]])
+
+    model = MultiOutputRegressor(
+        RandomForestRegressor(n_estimators=200, random_state=42, n_jobs=-1),
+        n_jobs=-1,
+    )
+    model.fit(X_tr, y_tr)
+    theta_hat = model.predict(X_tg)[0]
+
+    preds = forward_amplitude(
+        tg_df["Frequency_Hz"].values,
+        theta_hat[:5],
+        tg_df["V"].fillna(1.0).values,
+        background=float(theta_hat[5]),
+    )
+    return freqs, actual, preds, {
+        "m_N": float(theta_hat[0]),
+        "c_N": float(theta_hat[1]),
+        "k_N": float(theta_hat[2]),
+        "alpha_N": float(theta_hat[3]),
+        "G_N": float(theta_hat[4]),
+        "A_background": float(theta_hat[5]),
+    }
 
 
 def get_models(approach: str = "pointwise"):
@@ -54,6 +178,9 @@ def train_predict_pointwise(model_name, df_all, t_pmuts, target, amp_scaler):
     Train on all rows of training PMUTs, predict full curve of target PMUT.
     MLP inputs are feature-scaled internally.
     """
+    if model_name == "Physics":
+        return _predict_physics_curve(df_all, t_pmuts, target)
+
     models = get_models("pointwise")
     model = models[model_name]
 
@@ -190,6 +317,9 @@ def train_predict_vector(model_name: str, df_all, t_pmuts: list,
         for p in t_pmuts
     ])                              # shape: (n_train, n_freqs)
     X_tg = np.array([[float(target)]])
+
+    if model_name == "Physics":
+        return _predict_physics_curve(df_all, t_pmuts, target)
 
     if model_name == "RF":
         model = RandomForestRegressor(n_estimators=200, random_state=42, n_jobs=-1)

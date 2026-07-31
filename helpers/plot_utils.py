@@ -10,16 +10,18 @@ from plotly.subplots import make_subplots
 
 
 MODEL_COLORS = {
-    "RF":     "#2196F3",   # blue
-    "GB":     "#FF9800",   # orange
-    "MLP":    "#9C27B0",   # purple
-    "Actual": "#4CAF50",   # green
+    "RF":      "#2196F3",   # blue
+    "GB":      "#FF9800",   # orange
+    "MLP":     "#9C27B0",   # purple
+    "Physics": "#009688",   # teal
+    "Actual":  "#4CAF50",   # green
 }
 
 DASH_STYLES = {
-    "RF":  "solid",
-    "GB":  "dash",
-    "MLP": "dot",
+    "RF":      "solid",
+    "GB":      "dash",
+    "MLP":     "dot",
+    "Physics": "longdash",
 }
 
 

@@ -35,7 +35,7 @@ PROG_CSV = os.path.join(DATA_DIR, "progressive_cache.csv")
 REGI_CSV = os.path.join(DATA_DIR, "regime_cache.csv")
 
 APPROACHES = [("Vector", train_predict_vector), ("Pointwise", train_predict_pointwise)]
-MODELS     = ["RF", "GB", "MLP"]
+MODELS     = ["RF", "GB", "MLP", "Physics"]
 
 REGIMES = [
     {
@@ -73,16 +73,31 @@ def _predict_all(target, t_pmuts, fwhm_lo, fwhm_hi, df_all, amp_scaler,
     rows = []
     for approach_name, train_fn in APPROACHES:
         for model in MODELS:
-            fq, act, pr = train_fn(model, df_all, t_pmuts, target, amp_scaler)
+            result = train_fn(model, df_all, t_pmuts, target, amp_scaler)
+            if len(result) == 4:
+                fq, act, pr, params = result
+            else:
+                fq, act, pr = result
+                params = None
             for f, a, p in zip(fq, act, pr):
-                rows.append({
+                row = {
                     **base,
                     "approach":      approach_name,
                     "model":         model,
                     "frequency_mhz": round(float(f), 5),
                     "actual":        round(float(a), 6),
                     "predicted":     round(float(p), 6),
-                })
+                }
+                if params is not None:
+                    row.update({
+                        "m_n": round(float(params["m_N"]), 10),
+                        "c_n": round(float(params["c_N"]), 10),
+                        "k_n": round(float(params["k_N"]), 10),
+                        "alpha_n": round(float(params["alpha_N"]), 10),
+                        "g_n": round(float(params["G_N"]), 10),
+                        "a_background": round(float(params["A_background"]), 10),
+                    })
+                rows.append(row)
             print(f"    PMUT {target:>2}  {model:<3}  {approach_name:<10}  ✓")
     return rows
 

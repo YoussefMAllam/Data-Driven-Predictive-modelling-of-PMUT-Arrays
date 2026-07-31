@@ -47,7 +47,7 @@ def main():
     for target_str, entry in all_data.items():
         target = int(target_str)
         for approach in ["Vector", "Pointwise"]:
-            for model in ["RF", "GB", "MLP"]:
+            for model in ["RF", "GB", "MLP", "Physics"]:
                 d = entry[approach][model]
                 records.append({
                     "Target_PMUT": target,

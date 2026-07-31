@@ -58,7 +58,7 @@ def build_chart(df: pd.DataFrame, scheme_label: str) -> go.Figure:
         horizontal_spacing=0.10,
     )
 
-    for m in ["RF", "GB", "MLP"]:
+    for m in ["RF", "GB", "MLP", "Physics"]:
         sub   = df[df["Model"] == m].set_index("Target_PMUT")
         color = MODEL_COLORS[m]
 

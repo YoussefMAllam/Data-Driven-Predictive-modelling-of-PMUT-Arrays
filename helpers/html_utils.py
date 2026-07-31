@@ -79,7 +79,7 @@ select{padding:5px 9px;border-radius:6px;border:1px solid #CCC;
 # ── JavaScript (uses __DATA_JSON__ placeholder) ────────────────────────────
 _JS = r"""
 const DATA   = __DATA_JSON__;
-const COLORS = {RF:'#1565C0',GB:'#E65100',MLP:'#6A1B9A',Actual:'#2E7D32'};
+const COLORS = {RF:'#1565C0',GB:'#E65100',MLP:'#6A1B9A',Physics:'#009688',Actual:'#2E7D32'};
 const RENDERED = new Set();
 
 /* populate PMUT dropdown */
@@ -92,7 +92,7 @@ const RENDERED = new Set();
 })();
 
 function getModels(){
-  return ['RF','GB','MLP'].filter(m=>document.getElementById('cb-'+m).checked);
+  return ['RF','GB','MLP','Physics'].filter(m=>document.getElementById('cb-'+m).checked);
 }
 
 /* build Plotly trace array for one approach×scope combination */
@@ -111,7 +111,7 @@ function buildTraces(n, approach, scope){
     meta:{model:'Actual'}
   }];
   const sel = getModels();
-  for(const model of ['RF','GB','MLP']){
+  for(const model of ['RF','GB','MLP','Physics']){
     const apd = pd[approach]; if(!apd||!apd[model]) continue;
     const md = apd[model];
     let mf=[...pd.freqs], pr=[...md.pred];
@@ -258,6 +258,22 @@ def _card(n, d, regime=None, is_cross=False):
     cross_banner = '<div class="cross-banner">★ Cross-Regime</div>' if is_cross else ''
     cross_cls    = ' cross-card' if is_cross else ''
     score_rows   = '\n'.join(_score_row(r) for r in d.get('score_rows', []))
+    physics_params = ''
+    if 'Physics' in d.get('Vector', {}) and isinstance(d['Vector']['Physics'], dict):
+        params = d['Vector']['Physics'].get('params', {})
+        if params:
+            physics_params = (
+                '<details class="score-sec">'
+                f'<summary>Physics Parameters — PMUT {n}</summary>'
+                '<div style="font-size:12px;line-height:1.5;margin-top:6px">'
+                f'<b>m_N:</b> {params.get("m_N", "N/A")} &nbsp; '
+                f'<b>c_N:</b> {params.get("c_N", "N/A")} &nbsp; '
+                f'<b>k_N:</b> {params.get("k_N", "N/A")}<br/>'
+                f'<b>alpha_N:</b> {params.get("alpha_N", "N/A")} &nbsp; '
+                f'<b>G_N:</b> {params.get("G_N", "N/A")} &nbsp; '
+                f'<b>A_background:</b> {params.get("A_background", "N/A")} '
+                '</div></details>'
+            )
     return (
         f'<div class="pmut-card{cross_cls}" data-n="{n}" id="card-{n}" {regime_attr}>\n'
         f'  {cross_banner}\n'
@@ -276,6 +292,7 @@ def _card(n, d, regime=None, is_cross=False):
         f'    <div class="plot-cell" data-approach="Pointwise" data-scope="ROI">'
         f'<div id="plot-{n}-Pointwise-ROI"  class="plot-div"></div></div>\n'
         f'  </div>\n'
+        f'  {physics_params}\n'
         f'  <details class="score-sec">\n'
         f'    <summary>Score Table — PMUT {n}</summary>\n'
         f'    <table class="score-tbl">\n'
@@ -334,6 +351,7 @@ def build_interactive_html(
       <label class="chip model-chip" style="--c:#1565C0"><input type="checkbox" id="cb-RF"  checked onchange="updateModels()"> RF</label>
       <label class="chip model-chip" style="--c:#E65100"><input type="checkbox" id="cb-GB"  checked onchange="updateModels()"> GB</label>
       <label class="chip model-chip" style="--c:#6A1B9A"><input type="checkbox" id="cb-MLP" checked onchange="updateModels()"> MLP</label>
+      <label class="chip model-chip" style="--c:#009688"><input type="checkbox" id="cb-Physics" checked onchange="updateModels()"> Physics</label>
     </div>
     <div class="ctrl-grp">
       <span class="ctrl-lbl">PMUT</span>
